@@ -70,9 +70,17 @@ def notification_command(source: Source, reply_token: str, args: List) -> bool:
         if os.path.exists(user_setting_path):
             line_bot_api.reply_message(
                 reply_token,
-                TextSendMessage(text='遺棄先前的設定，幫您準備新的提醒設定')
+                [
+                    TextSendMessage(text='遺棄先前的設定，幫您準備新的提醒設定'),
+                    TextSendMessage(text='請輸入文字提醒內容')
+                ]
             )
             os.remove(user_setting_path)
+        else:
+            line_bot_api.reply_message(
+                reply_token,
+                TextSendMessage(text='請輸入文字提醒內容')
+            )
 
         # step 1
         # create setting data
@@ -80,10 +88,6 @@ def notification_command(source: Source, reply_token: str, args: List) -> bool:
         setting['step'] = 1
         setting['userid'] = source.user_id
         setting['username'] = line_bot_api.get_profile(source.user_id).display_name
-        line_bot_api.reply_message(
-            reply_token,
-            TextSendMessage(text='請輸入文字提醒內容')
-        )
         # update setting file
         with open(user_setting_path, mode='w', encoding='utf-8') as f:
             json.dump(setting, f, indent=4, ensure_ascii=False)
