@@ -4,7 +4,7 @@ import configparser
 import pytz
 from linebot import LineBotApi, WebhookHandler
 
-import utils
+from linebot_app import utils
 
 # set the default env (i.e. channel_access_token, channel_secret, ...)
 print('parsing arguments...')
