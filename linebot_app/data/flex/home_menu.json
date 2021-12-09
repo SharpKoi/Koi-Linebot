@@ -1,0 +1,146 @@
+{
+  "type": "carousel",
+  "contents": [
+    {
+      "type": "bubble",
+      "header": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "Youtube Music",
+            "color": "#FFFFFF",
+            "size": "xl"
+          }
+        ],
+        "backgroundColor": "#ff0000"
+      },
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "下載youtube上的音樂",
+            "wrap": true
+          }
+        ]
+      },
+      "footer": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "button",
+            "action": {
+              "type": "message",
+              "label": "GO",
+              "text": ";;yt"
+            },
+            "style": "primary"
+          }
+        ]
+      },
+      "size": "kilo"
+    },
+    {
+      "type": "bubble",
+      "size": "kilo",
+      "header": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "Notification",
+            "color": "#FFFFFF",
+            "size": "xl",
+            "action": {
+              "type": "datetimepicker",
+              "label": "action",
+              "data": "hello",
+              "mode": "date"
+            }
+          }
+        ],
+        "backgroundColor": "#20AA20"
+      },
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "wrap": true,
+            "text": "添加提醒"
+          }
+        ]
+      },
+      "footer": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "button",
+            "action": {
+              "type": "message",
+              "label": "GO",
+              "text": ";;notification add"
+            },
+            "style": "primary"
+          }
+        ]
+      }
+    },
+    {
+      "type": "bubble",
+      "size": "kilo",
+      "header": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "Websit",
+            "color": "#FFFFFF",
+            "size": "xl",
+            "action": {
+              "type": "datetimepicker",
+              "label": "action",
+              "data": "hello",
+              "mode": "date"
+            }
+          }
+        ],
+        "backgroundColor": "#212121"
+      },
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "Linebot網站",
+            "wrap": true
+          }
+        ]
+      },
+      "footer": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "button",
+            "action": {
+              "type": "uri",
+              "label": "GO",
+              "uri": "https://pykachu-website.herokuapp.com/resources.jsp"
+            },
+            "style": "primary"
+          }
+        ]
+      }
+    }
+  ]
+}
