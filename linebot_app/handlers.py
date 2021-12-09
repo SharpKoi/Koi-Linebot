@@ -74,31 +74,38 @@ class NotificationHandler(EventHandler):
                 with open(user_setting_path, mode='w', encoding='utf-8') as f:
                     json.dump(setting, f, indent=4, ensure_ascii=False)
             elif setting['step'] == 3:
-                # force the establish time using utc timezone.
-                setting['establish_time'] = datetime.utcnow()
-                # The timezone of the datetime postback is from user's timezone.
-                # Here assume that all users timezone are the same as the config timezone.
-                # Thus we set the timezone of the parsed datetime as config timezone
-                # and then transforms it to UTC time before writing into database.
-                setting['notify_time'] = \
-                    TIMEZONE.localize(datetime.strptime(setting['notify_time'], '%Y-%m-%d %H:%M')).astimezone(pytz.utc)
-                # write setting into database
-                notification = \
-                    Notification(
-                        userid=setting['userid'],
-                        username=setting['username'],
-                        notify_time=setting['notify_time'],
-                        content=setting['content'],
-                        establish_time=setting['establish_time'])
-                db.session.add(notification)
-                db.session.commit()
-                # delete setting file
-                os.remove(user_setting_path)
-                # send successful message to user
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    TextSendMessage(text='已成功設定提醒!')
-                )
+                if event.postback.data == 'reminder_confirm_cancel':
+                    os.remove(user_setting_path)
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage(text='已取消提醒設定!')
+                    )
+                elif event.postback.data == 'reminder_confirm_ok':
+                    # force the establish time using utc timezone.
+                    setting['establish_time'] = datetime.utcnow()
+                    # The timezone of the datetime postback is from user's timezone.
+                    # Here assume that all users timezone are the same as the config timezone.
+                    # Thus we set the timezone of the parsed datetime as config timezone
+                    # and then transforms it to UTC time before writing into database.
+                    setting['notify_time'] = \
+                        TIMEZONE.localize(datetime.strptime(setting['notify_time'], '%Y-%m-%d %H:%M')).astimezone(pytz.utc)
+                    # write setting into database
+                    notification = \
+                        Notification(
+                            userid=setting['userid'],
+                            username=setting['username'],
+                            notify_time=setting['notify_time'],
+                            content=setting['content'],
+                            establish_time=setting['establish_time'])
+                    db.session.add(notification)
+                    db.session.commit()
+                    # delete setting file
+                    os.remove(user_setting_path)
+                    # send successful message to user
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage(text='已成功設定提醒!')
+                    )
 
     @classmethod
     def notification_confirm_ui(cls, content: str, notify_time):
