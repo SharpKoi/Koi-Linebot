@@ -1,6 +1,6 @@
 import os
 import json
-from typing import List
+from typing import Any, List, Dict, Callable, Optional
 
 from flask_sqlalchemy import Pagination
 from linebot.models import (Source, SourceRoom, SourceGroup,
@@ -11,18 +11,22 @@ from linebot_app.bot_config import line_bot_api, config, SETTING_FOLDER_PATH, FL
 from linebot_app.flex import flex_config
 from linebot_app.models import Notification
 
-registered_commands = dict()
+registered_commands: Dict[str, Callable] = dict()
+command_shortcuts: Dict[str, str] = dict()
 
 
-def bot_command(label: str):
+def bot_command(label: str, shortcuts: Optional[Dict[str, str]] = None):
     def decorator(func):
         registered_commands[label] = func
+        if shortcuts is not None:
+            _shortcuts = dict(map(lambda kv: (kv[0], label + ' ' + kv[1]), shortcuts.items()))
+            command_shortcuts.update(_shortcuts)
         return func
 
     return decorator
 
 
-@bot_command('menu')
+@bot_command('menu', shortcuts={'選單': ''})
 def menu_command(source: Source, reply_token: str, args: List) -> bool:
     with open(flex_config['home-menu'], 'r', encoding='utf-8') as f:
         line_bot_api.reply_message(
@@ -34,7 +38,7 @@ def menu_command(source: Source, reply_token: str, args: List) -> bool:
     return True
 
 
-@bot_command('quit')
+@bot_command('quit', shortcuts={'踢出': ''})
 def quit_command(source: Source, reply_token: str, args: List) -> bool:
     if isinstance(source, SourceGroup):
         line_bot_api.reply_message(
@@ -50,7 +54,7 @@ def quit_command(source: Source, reply_token: str, args: List) -> bool:
     return False
 
 
-@bot_command('notification')
+@bot_command('notification', shortcuts={'添加提醒': 'add', '刪除提醒': 'rm', '提醒列表': 'list'})
 def notification_command(source: Source, reply_token: str, args: List) -> bool:
     if args[0] == 'list':
         page = 1 if (len(args) == 1) else int(args[1])

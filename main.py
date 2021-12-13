@@ -18,7 +18,7 @@ from linebot_app.bot_config import (config,
                                     TIMEZONE,
                                     COMMAND_ISSUED_SUCCESS, COMMAND_ISSUED_FAILED, FLEX_ALTER, SETTING_FOLDER_PATH)
 from linebot_app.flex import flex_config
-from linebot_app.commands import registered_commands
+from linebot_app.commands import registered_commands, command_shortcuts
 from linebot_app.handlers import EventHandler, NotificationHandler
 
 event_handlers: List[EventHandler] = list()
@@ -33,9 +33,8 @@ def handle_text_message(event: MessageEvent):
         _handler.handle_text(event)
 
     msg = msg.strip()
-    if msg.startswith(';;'):
-
-        segments = msg.split()
+    segments = msg.split()
+    if segments[0].startswith(';;'):
         if segments[0] == ';;':
             # a space between ;; and label
             label = segments[1]
@@ -44,7 +43,20 @@ def handle_text_message(event: MessageEvent):
             label = segments[0][2:]
             args = segments[1:]
         print(f'User {line_bot_api.get_profile(source.user_id).display_name} issued a command: "{msg}"')
-        if label in registered_commands.keys():
+        if label in registered_commands:
+            if registered_commands[label](source, event.reply_token, args):
+                print(COMMAND_ISSUED_SUCCESS)
+                return
+
+    else:
+        if segments[0] in command_shortcuts:
+            usr_args = segments[1:]
+            segments = command_shortcuts[segments[0]].split()
+            label = segments[0]
+            args = segments[1:]
+            args.extend(usr_args)
+            command_str = ';;' + ' '.join([label] + args)
+            print(f'User {line_bot_api.get_profile(source.user_id).display_name} issued a command: "{command_str}"')
             if registered_commands[label](source, event.reply_token, args):
                 print(COMMAND_ISSUED_SUCCESS)
                 return
