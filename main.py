@@ -32,10 +32,17 @@ def handle_text_message(event: MessageEvent):
     for _handler in event_handlers:
         _handler.handle_text(event)
 
+    msg = msg.strip()
     if msg.startswith(';;'):
+
         segments = msg.split()
-        label = segments[0][2:]
-        args = segments[1:]
+        if segments[0] == ';;':
+            # a space between ;; and label
+            label = segments[1]
+            args = segments[2:]
+        else:
+            label = segments[0][2:]
+            args = segments[1:]
         print(f'User {line_bot_api.get_profile(source.user_id).display_name} issued a command: "{msg}"')
         if label in registered_commands.keys():
             if registered_commands[label](source, event.reply_token, args):
